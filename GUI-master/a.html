@@ -1,0 +1,106 @@
+<html>
+
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+
+<title id='a'>ESP8266 WebSocket</title>
+
+<body>
+
+    
+    <script type="text/javascript">
+        var button = document.getElementById('btn');
+        var led1 = document.getElementById('led1');
+        var led2 = document.getElementById('led2');
+        var led3 = document.getElementById('led3');
+        var text = document.getElementById('text');
+        var url = window.location.host; // hĂ m tráº£ vá» url cá»§a trang hiá»‡n táº¡i kĂ¨m theo port
+        var ws = new WebSocket('ws://' + url + '/ws'); // má»Ÿ 1 websocket vá»›i port 8000
+        console.log('connecting...')
+        ws.onopen = function () //khi websocket Ä‘Æ°á»£c má»Ÿ thĂ¬ hĂ m nĂ y sáº½ Ä‘Æ°á»£c thÆ°c hiá»‡n
+        {
+            document.getElementById('status').innerHTML = 'Connected';
+            led1.disabled = false; //khi websocket Ä‘Æ°á»£c má»Ÿ, má»›i cho phĂ©p
+            led2.disabled = false; //khi websocket Ä‘Æ°á»£c má»Ÿ, má»›i cho phĂ©p
+            led3.disabled = false; //khi websocket Ä‘Æ°á»£c má»Ÿ, má»›i cho phĂ©p
+            console.log('connected...')
+        };
+        ws.onmessage = function (evt) // sá»± kiá»‡n xáº£y ra khi client nháº­n dá»¯ liá»‡u tá»« server
+        {
+            console.log(evt.data)
+            if (evt.data == 'Led_khach_on') {
+                led1.checked = true;
+            } else if (evt.data == 'Led_khach_off') {
+                led1.checked = false;
+            } else if (evt.data == 'Led_ngu_off') {
+                led2.checked = false;
+            } else if (evt.data == 'Led_ngu_on') {
+                led2.checked = true;
+            } else if (evt.data == 'Led_vs_off') {
+                led3.checked = false;
+            } else if (evt.data == 'Led_vs_on') {
+                led3.checked = true;
+            };
+        }
+
+        ws.onclose = function () { // hĂ m nĂ y sáº½ Ä‘Æ°á»£c thá»±c hiá»‡n khi Ä‘Ă³ng websocket
+            led1.disabled = true;
+            led2.disabled = true;
+            led3.disabled = true;
+            document.getElementById('status').innerHTML = 'Connected';
+        };
+        led1.onchange = function () { // thá»±c hiá»‡n thay Ä‘á»•i báº­t/táº¯t led
+            var led_status1 = 'LED_phong_khach_tat';
+            if (led1.checked) {
+                led_status1 = 'LED_phong_khach_bat';
+            }
+            ws.send(led_status1)
+        };
+        led2.onchange = function () { // thá»±c hiá»‡n thay Ä‘á»•i báº­t/táº¯t led
+            var led_status2 = 'LED_phong_ngu_tat';
+            if (led2.checked) {
+                led_status2 = 'LED_phong_ngu_bat';
+            }
+            ws.send(led_status2)
+        };
+        led3.onchange = function () { // thá»±c hiá»‡n thay Ä‘á»•i báº­t/táº¯t led
+            var led_status3 = 'LED_phong_vs_tat';
+            if (led3.checked) {
+                led_status3 = 'LED_phong_vs_bat';
+            }
+            ws.send(led_status3)
+        };
+        $(document).ready(function () {
+            console.log("ss");
+            function imageClick() {
+
+
+            }
+            $(".room").click(function () {
+                console.log("hiii");
+                var a = $(this).find("input")[0].checked;
+                var b = $(this).find("input").attr('id');
+
+                console.log(a, b);
+                var c = document.getElementById(b);
+                if (c.disabled) {
+
+                }
+                else {
+                    a==true?$(this).css("opacity",0.8):$(this).css("opacity",1);
+
+                    $(this).find("input").prop('checked', !a);
+                }
+            });
+            
+
+        });
+
+
+
+
+    </script>
+</body>
+
+</html>

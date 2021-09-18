@@ -1,0 +1,104 @@
+<!DOCTYPE HTML>
+<html>
+	
+    <head>
+		<title>ESP8266 WebSocket</title>
+	</head>
+    
+    <style> body { text-align: center; font-family: "Trebuchet MS", Arial; margin-left:auto; margin-right:auto;}
+        .slider { width: 400px;}
+     </style>
+	<body>
+      
+		<div> Webscoket status
+			<span id="status" style="font-weight: bold;"> disconnected </span>
+		</div>
+		<div> Control Phongkhach
+			<input type="checkbox" id="led1" name="led1" disabled="true" />
+		</div>
+        <div> Control PhongNgu
+			<input type="checkbox" id="led2" name="led2" disabled="true" />
+		</div>
+        <div> Control PhongVesinh
+			<input type="checkbox" id="led3" name="led3" disabled="true" />
+		</div>
+        <video id="localStream" width="400" controls></video>
+          <p>Position: <span id="servoPos">0</span></p>
+          <input type="range" min="0" max="180" class="slider" id="servoSlider" onchange="servo(this.value)" value="0">
+      
+        	<script type="text/javascript">
+            var slider = document.getElementById("servoSlider")
+            var servoP = document.getElementById("servoPos"); 
+            servoP.innerHTML = slider.value;
+            var button = document.getElementById('btn');
+            var led1 = document.getElementById('led1');
+            var led2 = document.getElementById('led2');
+            var led3 = document.getElementById('led3');
+            var url = window.location.host; // hàm trả về url của trang hiện tại kèm theo port
+            var ws = new WebSocket('ws://' + url + '/ws'); // mở 1 websocket với port 8000
+            console.log('connecting...')
+            ws.onopen = function() //khi websocket được mở thì hàm này sẽ được thưc hiện
+            {
+                document.getElementById('status').innerHTML = 'Connected';
+                led1.disabled = false; //khi websocket được mở, mới cho phép
+                led2.disabled = false; //khi websocket được mở, mới cho phép
+                led3.disabled = false; //khi websocket được mở, mới cho phép
+                servoSlider.discabled = false;
+                console.log('connected...')
+            };
+            ws.onmessage = function(evt) // sự kiện xảy ra khi client nhận dữ liệu từ server
+            {
+                console.log(evt.data)
+                if (evt.data == 'Led_khach_on') {
+                    led1.checked = true;
+                } else if (evt.data == 'Led_khach_off') {
+                    led1.checked = false;
+                } else if (evt.data == 'Led_ngu_off') {
+                    led2.checked = false;
+                } else if (evt.data == 'Led_ngu_on') {
+                    led2.checked = true;
+                } else if (evt.data == 'Led_vs_off') {
+                    led3.checked = false;
+                } else if (evt.data == 'Led_vs_on') {
+                    led3.checked = true;
+                };
+                
+            }
+
+            ws.onclose = function() { // hàm này sẽ được thực hiện khi đóng websocket
+                led1.disabled = true;
+                led2.disabled = true;
+                led3.disabled = true;
+                servoSlider.discabled = true;
+                document.getElementById('status').innerHTML = 'Connected';
+            };
+            led1.onchange = function() { // thực hiện thay đổi bật/tắt led
+                var led_status1 = 'LED_phong_khach_tat';
+                if (led1.checked) {
+                    led_status1 = 'LED_phong_khach_bat';
+                }
+                ws.send(led_status1)
+            };
+            led2.onchange = function() { // thực hiện thay đổi bật/tắt led
+                var led_status2 = 'LED_phong_ngu_tat';
+                if (led2.checked) {
+                    led_status2 = 'LED_phong_ngu_bat';
+                }
+                ws.send(led_status2)
+            };
+            led3.onchange = function() { // thực hiện thay đổi bật/tắt led
+                var led_status3 = 'LED_phong_vs_tat';
+                if (led3.checked) {
+                    led_status3 = 'LED_phong_vs_bat';
+                }
+                ws.send(led_status3)
+            };
+            slider.onchange = function(){
+              var value = this.value;
+              servoP.innerHTML = value;
+              ws.send(value)
+
+            }
+            </script>
+	</body>
+</html>

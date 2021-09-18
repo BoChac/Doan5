@@ -1,0 +1,21 @@
+{
+  "name": "doan55",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "fs": "*",
+    "http": "*",
+    "nodemon": "^2.0.7",
+    "socket.io": "^4.1.2",
+    "url": "^0.11.0",
+    "web-midi-api": "^2.0.9",
+    "ws": "^7.4.5"
+  }
+}
